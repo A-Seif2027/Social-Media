@@ -1,66 +1,3 @@
-src/
-  index.ts
-  app.controller.ts
-  config/                   
-    .env
-  infrastructure/              
-    db/
-      connection.ts           
-      migrations/
-    cache/
-
-  modules/
-    users/
-      controllers/
-        user.controller.ts
-      services/
-        user.service.ts
-      repositories/
-        DbUserRepository.ts   
-      dtos/
-        SignUp.dto.ts    
-      validators/
-        user.validation.ts
-      models/
-        user.model.ts
-      interfaces/
-        IUserCore.ts
-        IUserAuth.ts
-        IUserContact.ts
-        IUserMeta.ts
-      routes/
-        routes.ts
-      index.ts                  # barrel export
-
-    posts/
-    comments/
-    chat/
-    gateway/
-
-  shared/
-    errors/
-      AppError.ts
-      errorHandler.ts
-    middleware/
-      Validation.ts
-    utils/
-      classError.ts (or move to shared/errors)
-    types/
-    constants/
-
-  tests/
-    unit/
-      modules/
-        users/
-    integration/
-
-  docs/
-  scripts/
-  package.json
-  tsconfig.json
-
-
-
 src
 ├── Infrastructure
 │   ├── DB
@@ -73,9 +10,13 @@ src
 │   │               ├── DbUserRepository.ts
 │   │               ├── IFindByEmail.ts
 │   │               ├── IFindById.ts
-│   │               └── Icreate.ts
+│   │               ├── Icreate.ts
+│   │               └── index.ts
 │   └── email
+│       ├── IEmailService.ts
 │       ├── email.template.ts
+│       ├── emailEvents.ts
+│       ├── nodeMailerService.ts
 │       └── sendEmail.ts
 ├── app.controller.ts
 ├── docs
@@ -86,13 +27,18 @@ src
 │   └── users
 │       ├── controller
 │       │   └── auth
-│       │       ├── logIn.ts
 │       │       └── signUp.ts
 │       ├── dtos
 │       │   ├── SignInDto.ts
-│       │   └── SignUpDto.ts
+│       │   ├── request
+│       │   │   └── SignUpDtoReq.ts
+│       │   └── response
+│       │       └── SignUpDtoRes.ts
+│       ├── factory
+│       │   └── signUpFactory.ts
 │       ├── index.ts
 │       ├── interfaces
+│       │   └── ISignUpRepo.ts
 │       ├── routes
 │       │   └── auth.routes.ts
 │       ├── services
@@ -113,6 +59,5 @@ src
         │   ├── IComparer.ts
         │   ├── IHasher.ts
         │   └── bcrypt-adapter.ts
-        ├── errors
-        │   └── AppError.ts
-        └── events.ts
+        └── errors
+            └── AppError.ts
