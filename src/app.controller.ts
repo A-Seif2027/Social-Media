@@ -4,15 +4,15 @@ import express, { Request ,Response,NextFunction} from "express"
 import cors from 'cors'
 import helmet from "helmet"
 import {rateLimit} from 'express-rate-limit'
-import { AppError } from "./utils/classError"
-import userRouter from "./modules/users/user.controller.js"
-import { connectionDB } from "./DB/connectionDB"
+import { AppError } from "./shared/utils/errors/AppError" 
+import userRouter from "./modules/users/routes/auth.routes"
+import { connectionDB } from "./Infrastructure/DB/mongodb/connectionDB"
 
 config({path:resolve('./config/.env')})
 
 
-const app:express.Application=express()
-const port: string |number= process.env.PORT ||5000
+const app:express.Application= express()
+const port: number= Number(process.env.PORT) ||5000
 const limiter= rateLimit({
     windowMs:5*60*1000,
     limit: 10,
@@ -35,18 +35,20 @@ const bootstrab= ()=>{
     app.get("/", (req: Request, res: Response, next: NextFunction)=>{
         return res.status(200).json({message:"welcome bro  👌"})
     })
-
-
     app.use("/users",userRouter)
-
     connectionDB()
     app.use("/*demo", (req: Request, res: Response, next: NextFunction) => {
         throw new AppError( `Invalied URL ${req.originalUrl}`,404 )
     })
-
-    app.use((err: AppError,req: Request, res: Response, next: NextFunction) => {
-        return res.status(err.statusCode as unknown as number | 500).json({ message: err.message, stack: err.stack })
-    })
+    
+//  Global Error Handeler
+    app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+        const statusCode = typeof err.statusCode === "number" ? err.statusCode : 500;
+        res.status(statusCode).json({
+            message: err.message || "Internal Server Error",
+            stack:err.stack,
+        });
+    });
 
     app.listen(port,()=>{
         console.log(`server is running on port ${port} 👍`);
